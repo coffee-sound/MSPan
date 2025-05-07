@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="chRbia" name="MSPan" projectType="audioplug" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginManufacturer="coffee_sound_"
+              pluginManufacturerCode="Cfsd" pluginCode="Mspn" cppLanguageStandard="20">
+  <MAINGROUP id="LNbKFA" name="MSPan">
+    <GROUP id="{E3994041-AF41-BF23-55EA-336E5BBB02A6}" name="Source">
+      <FILE id="WNVsO3" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="RIXOUA" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="xRBKIl" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="zSVycw" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
+  <EXPORTFORMATS>
+    <VS2022 targetFolder="Builds/VisualStudio2022">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="MSPan" enablePluginBinaryCopyStep="1"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="MSPan"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../../../../../VST_SDK/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../../../VST_SDK/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../../../VST_SDK/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../../../../VST_SDK/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../../../VST_SDK/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../../../VST_SDK/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../../../../VST_SDK/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../../../VST_SDK/JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../../../../../../VST_SDK/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../../../VST_SDK/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../../../../VST_SDK/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../../../VST_SDK/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../../../VST_SDK/JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2022>
+  </EXPORTFORMATS>
+</JUCERPROJECT>
