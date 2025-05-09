@@ -19,7 +19,8 @@ MSPanAudioProcessor::MSPanAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ),
+                        params(apvts)
 #endif
 {
 }
@@ -95,6 +96,15 @@ void MSPanAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    params.prepareToPlay(sampleRate);
+    params.reset();
+
+    // prepare DSP module
+    spec.sampleRate = sampleRate;
+    spec.maximumBlockSize = juce::uint32(samplesPerBlock);
+    spec.numChannels = 2;
+
+    pannerDSP.prepare(spec);
 }
 
 void MSPanAudioProcessor::releaseResources()
@@ -129,7 +139,7 @@ bool MSPanAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) co
 }
 #endif
 
-void MSPanAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void MSPanAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[maybe_unused]] juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
@@ -144,17 +154,41 @@ void MSPanAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
+    // bypass check
+    if (auto* bypassParam = dynamic_cast<juce::AudioParameterBool*>(getBypassParameter())) {
+        if (bypassParam->get()) {
+            for (int channel = 0; channel < buffer.getNumChannels(); ++channel) {
+                auto* write = buffer.getWritePointer(channel);
+                auto* read = buffer.getReadPointer(channel);
+                std::memcpy(write, read, buffer.getNumSamples() * sizeof(float));
+            }
+            return;
+        }
+    }
+
+    params.update();
+
+    pannerDSP.setRule(static_cast<juce::dsp::PannerRule>(params.panRule));
+    pannerDSP.setPan(params.panAngle / 100.0f);
+
+    // create AudioBlock for dsp processing
+    juce::dsp::AudioBlock<float> block(buffer);
+
+    // pan processing
+    juce::dsp::ProcessContextReplacing<float> context(block);
+    pannerDSP.process(context);
+
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
     // Make sure to reset the state if your inner loop is processing
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer (channel);
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample) {
+        params.smoothen();
 
-        // ..do something to the data...
+        buffer.setSample(0, sample, buffer.getSample(0, sample) * params.gain);
+        buffer.setSample(1, sample, buffer.getSample(1, sample) * params.gain);
     }
 }
 
@@ -175,12 +209,19 @@ void MSPanAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+    auto state = apvts.copyState();
+    std::unique_ptr<juce::XmlElement> xml(state.createXml());
+    copyXmlToBinary(*xml, destData);
 }
 
 void MSPanAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+    std::unique_ptr<juce::XmlElement> xml(getXmlFromBinary(data, sizeInBytes));
+    if (xml.get() != nullptr && xml->hasTagName(apvts.state.getType())) {
+        apvts.replaceState(juce::ValueTree::fromXml(*xml));
+    }
 }
 
 //==============================================================================
@@ -189,3 +230,4 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new MSPanAudioProcessor();
 }
+

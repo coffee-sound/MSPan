@@ -5,6 +5,8 @@
               pluginManufacturerCode="Cfsd" pluginCode="Mspn" cppLanguageStandard="20">
   <MAINGROUP id="LNbKFA" name="MSPan">
     <GROUP id="{E3994041-AF41-BF23-55EA-336E5BBB02A6}" name="Source">
+      <FILE id="wCqlzZ" name="Parameters.cpp" compile="1" resource="0" file="Source/Parameters.cpp"/>
+      <FILE id="d7WHx6" name="Parameters.h" compile="0" resource="0" file="Source/Parameters.h"/>
       <FILE id="WNVsO3" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="RIXOUA" name="PluginProcessor.h" compile="0" resource="0"
