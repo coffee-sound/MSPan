@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "Parameters.h"
 
 //==============================================================================
 /**
@@ -53,7 +54,22 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    // link to daw's bypass button
+    juce::AudioProcessorParameter* getBypassParameter() const {
+        return apvts.getParameter(bypassParamID.getParamID());
+    }
+
 private:
+    juce::AudioProcessorValueTreeState apvts{
+        *this, nullptr, juce::Identifier("Parameters"), Parameters::createParameterLayout()
+    };
+
+    Parameters params;
+
+    // pan module
+    juce::dsp::Panner<float> pannerDSP;
+    juce::dsp::ProcessSpec spec;
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MSPanAudioProcessor)
 };
