@@ -7,6 +7,27 @@ static void castParameter(juce::AudioProcessorValueTreeState& apvts, const juce:
     jassert(destination);  // parameter does not exist or wrong type
 }
 
+static juce::String stringFromDecibels(float value, int)
+{
+    return juce::String(value, 1) + " dB";
+}
+
+static juce::String stringFromAngles(float value, int)
+{
+    if (value >= 100.0f) {
+        return "R";
+    }
+    else if (value <= -100.0f) {
+        return "L";
+    }
+    else if (value == 0.0f) {
+        return "C";
+    }
+    else {
+        return juce::String((int)value);
+    }
+}
+
 Parameters::Parameters(juce::AudioProcessorValueTreeState& apvts)
 {
     castParameter(apvts, gainParamID, gainParam);
@@ -23,14 +44,16 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterL
     layout.add(std::make_unique<juce::AudioParameterFloat>(
         gainParamID,
         "Output Gain",
-        juce::NormalisableRange<float>{ -12.0f, 12.0f },
-        0.0f));
+        juce::NormalisableRange<float>{ -12.0f, 12.0f, 0.01f },
+        0.0f,
+        juce::AudioParameterFloatAttributes().withStringFromValueFunction(stringFromDecibels)));
 
     layout.add(std::make_unique<juce::AudioParameterFloat>(
         panAngleParamID,
         "Pan Angle",
-        juce::NormalisableRange<float>{ -100.0f, 100.0f },
-        0.0f));
+        juce::NormalisableRange<float>{ -100.0f, 100.0f, 1.0f },
+        0.0f,
+        juce::AudioParameterFloatAttributes().withStringFromValueFunction(stringFromAngles)));
 
     layout.add(std::make_unique<juce::AudioParameterChoice>(
         panRuleParamID,
